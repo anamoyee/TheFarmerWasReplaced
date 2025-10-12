@@ -4,7 +4,7 @@
 
 from builtins import bool, dict, float, int, list, range, str, tuple, type  # noqa: UP029
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, NoReturn
 
 
 # -------------------------------------------------------------------------------
