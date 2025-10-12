@@ -8,12 +8,15 @@ def reset_pos():
 		move(West)
 
 
-def reset_ground(ground_type):
-	# type: (Grounds) -> None
+def reset_ground(ground_type, plant_=None):
+	# type: (Grounds, Entities | None) -> None
 	for _ in range(WS):
 		for _ in range(WS):
 			if get_ground_type() != ground_type:
 				till()
+			if plant_ != NONE:
+				harvest()
+				plant(plant_)
 			move(North)
 		move(East)
 
