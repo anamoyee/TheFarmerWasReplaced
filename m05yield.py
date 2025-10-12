@@ -1,7 +1,7 @@
 from m04prelude import *
 
 
-def yield_spot_grass():
+def yield_spot_hay():
 	if get_ground_type() != Grounds.Grassland:
 		till()
 	if get_entity_type() != Entities.Grass:
@@ -20,4 +20,4 @@ def yield_spot_bush():
 		plant(Entities.Bush)
 
 
-yield_spot = yield_spot_grass
+yield_spot = yield_spot_hay

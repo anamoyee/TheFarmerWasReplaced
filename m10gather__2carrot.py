@@ -16,7 +16,7 @@ def guarantee_carrot(n):
 	reset_pos()
 
 	while this_num_items() < n:
-		guarantee_amt = 8 * (WS**2)  # 4 (carrots are four in one plot) * (WS**2)
+		guarantee_amt = 2**10
 
 		if guarantee_wood(guarantee_amt) or guarantee_hay(guarantee_amt):
 			reset_ground(Grounds.Soil)
