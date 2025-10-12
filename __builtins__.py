@@ -237,6 +237,11 @@ class Entities:
     Grows on: soil
     """
 
+	Dead_Pumpkin: Entity
+	"""
+	[TODO]
+	"""
+
 	Sunflower: Entity
 	"""
     Sunflowers collect the power from the sun. Harvesting them will give you `Items.Power` equal to the number of sunflowers in the farm.
