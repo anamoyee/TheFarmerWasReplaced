@@ -3,7 +3,7 @@
 # Contributed by @Noon, @KlingonDragon, @dieckie and @Flekay on the TFWR Discord server.
 
 from builtins import bool, dict, float, int, list, range, str, tuple, type  # noqa: UP029
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import Any, NoReturn
 
 
