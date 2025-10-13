@@ -2,7 +2,7 @@
 # Note that the games language is not Python and these definitions are only an approximation.
 # Contributed by @Noon, @KlingonDragon, @dieckie and @Flekay on the TFWR Discord server.
 
-from builtins import bool, dict, float, int, list, range, str, tuple, type  # noqa: UP029
+from builtins import bool, dict, float, int, len, list, range, str, tuple, type  # noqa: UP029
 from collections.abc import Callable, Iterable
 from typing import Any, NoReturn
 
