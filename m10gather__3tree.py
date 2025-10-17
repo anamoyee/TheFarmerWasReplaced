@@ -1,5 +1,6 @@
 from m04prelude import *
 from m05yield import *
+from m10gather__5sunflowe import guarantee_power
 
 
 def guarantee_wood(n):
@@ -11,12 +12,18 @@ def guarantee_wood(n):
 	if this_num_items() >= n:
 		return False
 
-	# reset_ground(Grounds.Grassland)
-	reset_pos()
+	def this_reset():
+		# reset_ground(Grounds.Grassland)
+		reset_pos()
+
+	this_reset()
 
 	while this_num_items() < n * 2:
-		for _ in range(get_world_size()):
-			for _ in range(get_world_size()):
+		if guarantee_power(1000):
+			this_reset()
+
+		for _ in range(WS):
+			for _ in range(WS):
 				if (get_pos_x() + 2 * get_pos_y()) % 4 != 3:
 					if can_harvest():
 						harvest()

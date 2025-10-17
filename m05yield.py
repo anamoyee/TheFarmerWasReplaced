@@ -20,4 +20,15 @@ def yield_spot_bush():
 		plant(Entities.Bush)
 
 
+def yield_spot_carrot():
+	if get_ground_type() != Grounds.Soil:
+		till()
+	if can_harvest():
+		harvest()
+	if get_entity_type() != Entities.Carrot:
+		plant(Entities.Carrot)
+	if can_harvest():
+		harvest()
+
+
 yield_spot = yield_spot_hay

@@ -2,8 +2,43 @@ from m04prelude import *
 from m05yield import *
 
 
-def guarantee_sunflower(n):
-	# type: (int) -> bool
+def _traveling_sunflowersman(lst):
+	# type: (list[tuple[int, int]]) -> list[tuple[int, int]]
+	if not lst:
+		return []
+	start_x, start_y = get_pos()
+	ordered = []
+	remaining = lst[:]
+	current_x, current_y = start_x, start_y
+
+	while remaining:
+		best_i = 0
+		best_dist = 999999999
+		i = 0
+		while i < len(remaining):
+			x, y = remaining[i]
+			dx = x - current_x
+			dy = y - current_y
+			if dx < 0:
+				dx = -dx
+			if dy < 0:
+				dy = -dy
+			dist = dx + dy
+			if dist < best_dist:
+				best_dist = dist
+				best_i = i
+			i += 1
+
+		nx, ny = remaining[best_i]
+		ordered.append((nx, ny))
+		remaining.pop(best_i)
+		current_x, current_y = nx, ny
+
+	return ordered
+
+
+def guarantee_power(n, reseted_soil_already=False):
+	# type: (int, bool) -> bool
 
 	def this_num_items():
 		return num_items(Items.Power)
@@ -11,8 +46,12 @@ def guarantee_sunflower(n):
 	if this_num_items() >= n:
 		return False
 
-	reset_ground(Grounds.Soil)
-	reset_pos()
+	def this_reset():
+		reset_ground(Grounds.Soil)
+		reset_pos()
+
+	if not reseted_soil_already:
+		this_reset()
 
 	while this_num_items() < n * 2:
 		d = {}  # type: dict[int, list[tuple[int, int]]]
@@ -34,7 +73,7 @@ def guarantee_sunflower(n):
 			move(East)
 
 		for k in range(15, 7 - 1, -1):
-			lst = d[k]
+			lst = _traveling_sunflowersman(d[k])
 
 			for pos in lst:
 				move_to2(pos)

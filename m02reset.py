@@ -2,6 +2,9 @@ from m01const import *
 
 
 def reset_pos():
+	if get_entity_type() == Entities.Hedge:
+		return  # Do not reset pos if within a hedge
+
 	while get_pos_y() > 0:
 		move(South)
 	while get_pos_x() > 0:
