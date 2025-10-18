@@ -85,7 +85,7 @@ def guarantee_pumpkin_with_fertilizer(n, reseted_soil_already=False):
 	while this_num_items() < n * 2:
 		grown_pumpkins = 0
 
-		guarantee_amt = 2**14
+		guarantee_amt = 4 * calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(Entities.Pumpkin)
 
 		if guarantee_carrot(guarantee_amt, True) or guarantee_power(5000, True):
 			# this_reset()

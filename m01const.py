@@ -5,3 +5,6 @@ WS = get_world_size()
 
 
 DIRECTIONS = [North, East, West, South]
+
+_DEBUG_SKIP_EXTENSIVE_RESET = True
+# Skip (potentially breaking shit) the lengthy reset functions, for testing only!

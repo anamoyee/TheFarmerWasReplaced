@@ -21,7 +21,7 @@ def guarantee_carrot(n, reseted_soil_already=False):
 		this_reset()
 
 	while this_num_items() < n:
-		guarantee_amt = 2**10
+		guarantee_amt = 4 * calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(Entities.Carrot)
 
 		if guarantee_wood(guarantee_amt) or guarantee_hay(guarantee_amt) or guarantee_power(1000):
 			this_reset()

@@ -7,6 +7,20 @@ if 1 - 1:
 	T = TypeVar("T")
 
 
+def min(x, y):
+	if x < y:
+		return x
+	else:
+		return y
+
+
+def max(x, y):
+	if x > y:
+		return x
+	else:
+		return y
+
+
 def copy_list(lst):
 	# type: (list[T]) -> list[T]
 
@@ -66,6 +80,34 @@ def get_pos():
 	# type: () -> tuple[int, int]
 
 	return (get_pos_x(), get_pos_y())
+
+
+def _calculate_crop_cost_by_unlock(unlock):
+	# type: (Unlock) -> int
+	return 2 ** (num_unlocked(unlock) - 1)
+
+
+def calculate_crop_cost_for_entity_including_hardcoded_multipliers(entity):
+	# type: (Entity) -> int
+	lookup = {
+		Entities.Grass: (1, Unlocks.Grass),
+		Entities.Bush: (1, Unlocks.Trees),
+		Entities.Tree: (5, Unlocks.Trees),
+		Entities.Carrot: (1, Unlocks.Carrots),
+		Entities.Pumpkin: (1, Unlocks.Pumpkins),
+	}  # type: dict[Entity, tuple[int, Unlock]]
+
+	if entity not in lookup:
+		err_while1(__name__, "calculate_...: Entity:", entity, "was not found in the lookup dict.")
+
+	mult, unlock = lookup[entity]
+
+	return mult * _calculate_crop_cost_by_unlock(unlock)
+
+
+def calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(unlock, WS_=WS):
+	# type: (Unlock, int) -> int
+	return (WS_**2) * calculate_crop_cost_for_entity_including_hardcoded_multipliers(unlock)
 
 
 def move_to_x(x):

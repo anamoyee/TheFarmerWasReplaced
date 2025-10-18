@@ -5,6 +5,7 @@ from m10gather__3tree import *
 from m10gather__4pumpkins import *
 from m10gather__5sunflowe import *
 from m10gather__6maze import *
+from m10gather__7cacti import guarantee_cucktoose
 
 reset()
 
@@ -18,9 +19,11 @@ def infstrat():
 		guarantee_hay(num)
 
 
-guarantee_treasure(INF)
+# guarantee_treasure(INF)
 # guarantee_treasure_cheaty(INF)
-guarantee_wood(INF)
+# guarantee_wood(INF)
 
-guarantee_pumpkin_with_fertilizer(INF)
+# guarantee_pumpkin_with_fertilizer(INF)
+
+guarantee_cucktoose(INF)
 infstrat()

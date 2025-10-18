@@ -37,7 +37,7 @@ def _traveling_sunflowersman(lst):
 	return ordered
 
 
-def guarantee_power(n, reseted_soil_already=False):
+def guarantee_power(n=10000, reseted_soil_already=False):
 	# type: (int, bool) -> bool
 
 	def this_num_items():
@@ -60,8 +60,8 @@ def guarantee_power(n, reseted_soil_already=False):
 
 		for _ in range(WS):
 			for _ in range(WS):
-				while get_water() < 0.75 and use_item(Items.Water):
-					pass
+				# while get_water() < 0.75 and use_item(Items.Water):
+				# 	pass
 
 				if get_entity_type() not in (None, Entities.Sunflower):
 					harvest()
