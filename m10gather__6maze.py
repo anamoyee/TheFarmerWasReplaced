@@ -32,20 +32,20 @@ def guarantee_treasure_cheaty(n):
 		harvest()
 
 
-def explore_maze(moves=[]):
-	# type: (list[Direction]) -> bool
+def explore_maze(prev_dir=NONE):
+	# type: (Direction | None) -> bool
 
 	if get_entity_type() == Entities.Treasure:
 		return True
 
 	for dir in DIRECTIONS:
-		if moves and moves[-1] == dir180(dir):
+		if prev_dir and prev_dir == dir180(dir):
 			continue
 
 		moved = move(dir)
 
 		if moved:
-			if explore_maze(merge_list(moves, [dir])):
+			if explore_maze(dir):
 				return True
 
 			move(dir180(dir))

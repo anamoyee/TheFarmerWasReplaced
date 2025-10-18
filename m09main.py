@@ -19,8 +19,7 @@ def infstrat():
 		guarantee_hay(num)
 
 
-# guarantee_treasure(INF)
-# guarantee_treasure_cheaty(INF)
+guarantee_treasure(INF)
 # guarantee_wood(INF)
 
 # guarantee_pumpkin_with_fertilizer(INF)
