@@ -9,6 +9,22 @@ if 1 - 1:
 
 if True:  # list operations
 
+	def any(lst):
+		# type: (list[bool]) -> bool
+		for item in lst:  # noqa: SIM110
+			if item:
+				return True
+
+		return False
+
+	def all(lst):
+		# type: (list[bool]) -> bool
+		for item in lst:  # noqa: SIM110
+			if not item:
+				return False
+
+		return True
+
 	def copy_list(lst):
 		# type: (list[T]) -> list[T]
 
@@ -29,6 +45,10 @@ if True:  # list operations
 			new_lst.append(item)
 
 		return new_lst
+
+	def random_choice(lst):
+		# type: (list[T]) -> T
+		return lst[random() * len(lst) // 1]
 
 
 if True:  # Direction and Position
@@ -81,18 +101,19 @@ if True:  # calculate crop cost for dynamic upgrades
 			Entities.Tree: (5, Unlocks.Trees),
 			Entities.Carrot: (1, Unlocks.Carrots),
 			Entities.Pumpkin: (1, Unlocks.Pumpkins),
+			Entities.Cactus: (1, Unlocks.Cactus),
 		}  # type: dict[Entity, tuple[int, Unlock]]
 
 		if entity not in lookup:
-			err_while1(__name__, "calculate_...: Entity:", entity, "was not found in the lookup dict.")
+			err_while1(__name__, "calculate_...: Entity: '" + str(entity) + "' was not found in the lookup dict.")
 
 		mult, unlock = lookup[entity]
 
 		return mult * _calculate_crop_cost_by_unlock(unlock)
 
-	def calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(unlock, WS_=WS):
-		# type: (Unlock, int) -> int
-		return (WS_**2) * calculate_crop_cost_for_entity_including_hardcoded_multipliers(unlock)
+	def calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(entity, WS_=WS):
+		# type: (Entity, int) -> int
+		return (WS_**2) * calculate_crop_cost_for_entity_including_hardcoded_multipliers(entity)
 
 
 if True:  # Move!, Get out of tha way!
@@ -208,3 +229,50 @@ if True:  # Errors
 		while 1:
 			print_fn(dunder_name, "->", msg)
 			sleep_fn()
+
+
+if True:  # Parallel Drones Untils
+
+	def await_drones(f, primary_direction):
+		# type: (Callable[[int], T], Direction) -> T | None
+		### For each drone up to min(WS, MD) run f(drone_index), then saturate the main thread with the same task, at the end collect all drones. Return that main thread's f() returned value (which is None if the main thread drone did not get to run because of WS < MD).
+		drones = []
+
+		reset_pos()
+
+		retval = NONE  # type: T | None
+
+		for i in range(min(WS, MD)):
+
+			def f_prime():
+				return f(i)  # noqa: B023
+
+			HDRN = spawn_drone(f_prime)
+
+			if HDRN == NONE:
+				retval = f(i)
+			else:
+				drones.append(HDRN)
+
+			move(primary_direction)
+
+		for HDRN in drones:
+			wait_for(HDRN)
+
+		return retval
+
+
+def water_until(desired_water):
+	# type: (float) -> None
+
+	water_items = min(4.0, max(0.0, (((desired_water - get_water()) * 4) + 1) // 1))
+
+	if water_items and num_items(Items.Water) > 50:
+		return use_item(Items.Water, water_items)
+
+
+def sleep(n_ticks):
+	# type: (int) -> None
+
+	for _ in range(n_ticks):  # wait 200 ticks
+		measure()  # measure() always takes 1 tick afaik

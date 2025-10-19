@@ -1,1 +1,1 @@
-change_hat(Hats.Tree_Hat)
+change_hat(Hats.Cactus_Hat)

@@ -1,7 +1,7 @@
 from m04prelude import *
 from m05yield import *
-from m10gather__2carrot import guarantee_carrot
-from m10gather__5sunflowe import guarantee_power
+from m10gather__2carrot import col_guarantee_carrot, guarantee_carrot
+from m10gather__5sunflowe import par_guarantee_power
 
 
 def guarantee_pumpkin(n):
@@ -18,14 +18,14 @@ def guarantee_pumpkin(n):
 		reset_pos()
 
 	this_reset()
-	guarantee_power(10000, True)
+	par_guarantee_power(10000, True)
 
 	while this_num_items() < n * 2:
 		grown_pumpkins = 0
 
 		guarantee_amt = 2**10
 
-		if guarantee_carrot(guarantee_amt) or guarantee_power(5000, True):
+		if guarantee_carrot(guarantee_amt) or par_guarantee_power(5000, True):
 			this_reset()
 
 		PUMPKIN_SIDELENGTH = 9
@@ -80,14 +80,14 @@ def guarantee_pumpkin_with_fertilizer(n, reseted_soil_already=False):
 
 	if not reseted_soil_already:
 		this_reset()
-	guarantee_power(10000, True)
+	par_guarantee_power(10000, True)
 
 	while this_num_items() < n * 2:
 		grown_pumpkins = 0
 
 		guarantee_amt = 4 * calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(Entities.Pumpkin)
 
-		if guarantee_carrot(guarantee_amt, True) or guarantee_power(5000, True):
+		if any((guarantee_carrot(guarantee_amt, True), par_guarantee_power(5000, True))):
 			# this_reset()
 			pass  # same soil - no need to reset
 
@@ -134,3 +134,49 @@ def guarantee_pumpkin_with_fertilizer(n, reseted_soil_already=False):
 		move_to(0, 0)
 
 	return True
+
+
+def _f_col_guarantee_pumpkin(is_main):
+	grown_pumpkins = 0
+	while grown_pumpkins < WS:
+		guarantee_amt = 4 * calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(Entities.Pumpkin)
+
+		col_guarantee_carrot(guarantee_amt, True)
+
+		grown_pumpkins = 0
+		for _ in range(WS):
+			if get_entity_type() != Entities.Pumpkin and can_harvest():
+				harvest()
+
+			if get_entity_type() == Entities.Dead_Pumpkin:
+				plant(Entities.Pumpkin)
+				while not can_harvest() and num_items(Items.Fertilizer):
+					if get_entity_type() == Entities.Dead_Pumpkin:
+						plant(Entities.Pumpkin)
+					use_item(Items.Fertilizer)
+
+			if get_entity_type() == Entities.Pumpkin and can_harvest():
+				grown_pumpkins += 1
+			else:
+				plant(Entities.Pumpkin)
+
+			move(North)
+
+
+def par_guarantee_pumpkin(n, reseted_ground_already=False):
+	def this_num_items():
+		return num_items(Items.Pumpkin)
+
+	if this_num_items() >= n:
+		return False
+
+	def this_reset():
+		par_reset_ground(Grounds.Soil)
+		reset_pos()
+
+	if not reseted_ground_already:
+		this_reset()
+
+	while this_num_items() < n * 2:
+		await_drones(_f_col_guarantee_pumpkin, East)
+		harvest()

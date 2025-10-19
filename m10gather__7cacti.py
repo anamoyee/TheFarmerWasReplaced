@@ -1,6 +1,7 @@
 from m02reset import reset_ground, reset_pos
 from m04prelude import *
-from m10gather__5sunflowe import guarantee_power
+from m10gather__4pumpkins import par_guarantee_pumpkin
+from m10gather__5sunflowe import par_guarantee_power
 
 
 def get_pos_of_dir(direction):
@@ -41,28 +42,11 @@ def _sort_current_col_or_row(primary_direction):
 	return already_sorted
 
 
-def DRONE_bg_sort_cactus():
-	move_to_random()
-
-	while True:
-		for _ in range(get_world_size()):
-			_sort_current_col_or_row(North)
-			move(East)
-			for _ in range(random() * 3 // 1):
-				move(South)
-
-		for _ in range(get_world_size()):
-			_sort_current_col_or_row(East)
-			move(North)
-			for _ in range(random() * 3 // 1):
-				move(West)
-
-
-def guarantee_cucktoose(n):
+def par_guarantee_cucktoose(n):
 	# type: (int) -> bool
 
-	def this_reset():
-		reset_ground(Grounds.Soil, Entities.Cactus)
+	def _cucktoose_reset():
+		par_reset_ground(Grounds.Soil, Entities.Cactus)
 		reset_pos()
 
 	def this_num_items():
@@ -72,32 +56,24 @@ def guarantee_cucktoose(n):
 		return False
 
 	if get_ground_type() != Grounds.Soil:
-		this_reset()
+		_cucktoose_reset()
 
 	# guarantee_power(20000, True)
 
-	while spawn_drone(DRONE_bg_sort_cactus):
-		pass
-
 	while this_num_items() < n * 2:
-		if get_entity_type() != Entities.Cactus:
-			this_reset()
+		guarantee_amt = 4 * calculate_crop_cost_for_entity_including_hardcoded_multipliers_for_full_field(Entities.Cactus)
 
-		sorted_all = False
+		par_guarantee_pumpkin(guarantee_amt, True)
 
-		while not sorted_all:
-			sorted_all = True
+		_cucktoose_reset()
 
-			reset_pos()
-			for _ in range(get_world_size()):
-				if not _sort_current_col_or_row(North):
-					sorted_all = False
-				move(East)
+		def f_col(is_main):
+			_sort_current_col_or_row(North)
 
-			reset_pos()
-			for _ in range(get_world_size()):
-				if not _sort_current_col_or_row(East):
-					sorted_all = False
-				move(North)
+		def f_row(is_main):
+			_sort_current_col_or_row(East)
+
+		await_drones(f_col, East)
+		await_drones(f_row, North)
 
 		harvest()

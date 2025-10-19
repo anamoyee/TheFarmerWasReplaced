@@ -37,7 +37,75 @@ def _traveling_sunflowersman(lst):
 	return ordered
 
 
-def guarantee_power(n=10000, reseted_soil_already=False):
+# def par_guarantee_power(n=10000, reseted_soil_already=False):
+# 	# type: (int, bool) -> bool
+
+# 	def this_num_items():
+# 		return num_items(Items.Power)
+
+# 	if this_num_items() >= n:
+# 		return False
+
+# 	def this_reset():
+# 		par_reset_ground(Grounds.Soil)
+# 		reset_pos()
+
+# 	if not reseted_soil_already:
+# 		this_reset()
+
+# 	while this_num_items() < n * 2:
+# 		global d
+# 		d = {}  # type: dict[int, list[tuple[int, int]]]
+# 		for k in range(7, 15 + 1):
+# 			d[k] = []
+
+# 		for _ in range(WS):
+# 			for _ in range(WS):
+# 				# while get_water() < 0.75 and use_item(Items.Water):
+# 				# 	pass
+
+# 				if get_entity_type() not in (None, Entities.Sunflower):
+# 					harvest()
+
+# 				plant(Entities.Sunflower)
+# 				d[measure()].append(get_pos())
+
+# 				move(North)
+# 			move(East)
+
+# 		prev_drone = None
+
+# 		for k in range(15, 7 - 1, -1):
+
+# 			def deco(k, prev_drone):
+# 				# type: (int, Any) -> Callable[[bool], None]
+# 				def f(is_main, k=k, prev_drone=prev_drone):
+# 					global d
+# 					# type: (bool, int, Any) -> None
+# 					lst = _traveling_sunflowersman(d[k])  # noqa: B023, RUF100
+
+# 					if prev_drone != NONE:
+# 						wait_for(prev_drone)
+
+# 					for pos in lst:
+# 						move_to2(pos)
+
+# 						while not can_harvest():
+# 							pass
+
+# 						harvest()
+
+# 				return f
+
+# 			prev_drone = spawn_drone(deco(k, prev_drone))
+
+# 		if prev_drone != NONE:
+# 			wait_for(prev_drone)
+
+# 	return True
+
+
+def par_guarantee_power(n=10000, reseted_soil_already=False):
 	# type: (int, bool) -> bool
 
 	def this_num_items():
@@ -47,40 +115,37 @@ def guarantee_power(n=10000, reseted_soil_already=False):
 		return False
 
 	def this_reset():
-		reset_ground(Grounds.Soil)
+		par_reset_ground(Grounds.Soil)
 		reset_pos()
 
 	if not reseted_soil_already:
 		this_reset()
 
-	while this_num_items() < n * 2:
-		d = {}  # type: dict[int, list[tuple[int, int]]]
-		for k in range(7, 15 + 1):
-			d[k] = []
+	def f(n):
+		inv_n = MD - n - 1
+		sleep(400 * inv_n)
 
+		lst = []  # type: list[int]
 		for _ in range(WS):
+			if can_harvest():
+				harvest()
+			else:
+				sleep(200)
+
+			plant(Entities.Sunflower)
+			lst.append(measure())
+
+			move(North)
+
+		for v in [15, 14, 13, 12, 11, 10, 9, 8, 7]:
 			for _ in range(WS):
-				# while get_water() < 0.75 and use_item(Items.Water):
-				# 	pass
-
-				if get_entity_type() not in (None, Entities.Sunflower):
+				if measure() == v:
 					harvest()
-
-				plant(Entities.Sunflower)
-				d[measure()].append(get_pos())
+				else:
+					sleep(200)
 
 				move(North)
-			move(East)
 
-		for k in range(15, 7 - 1, -1):
-			lst = _traveling_sunflowersman(d[k])
-
-			for pos in lst:
-				move_to2(pos)
-
-				while not can_harvest():
-					pass
-
-				harvest()
-
-	return True
+	while this_num_items() < n:
+		await_drones(f, East)
+		reset_pos()
